@@ -14,9 +14,62 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
+if vim.g.neovide then
+	vim.opt.guifont = "Hack Nerd Font"
+	vim.g.neovide_theme = "auto"
+
+	vim.g.neovide_input_use_logo = 1
+	vim.keymap.set({ "n", "v", "s", "x", "o", "i", "l", "c", "t" }, "<D-v>", function()
+		vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+	end, { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+	-- vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
+	-- vim.keymap.set("v", "<D-c>", '"+y') -- Copy
+	-- vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
+	-- vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
+	-- vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+	-- vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+end
 
 vim.g.mapleader = require("custom_keys").leader
-vim.g.maplocalleader = "\\"
+vim.g.maplocalleader = ","
+vim.g.colorcolumn = "75,80,100,120"
+vim.opt.cursorcolumn = true
+vim.g.colors_name = "tokyonight"
+-- vim.env.GOOS = "linux"
+vim.g.background = "light"
+vim.g.license_author = "Leon Hwang"
+vim.g.license_email = "leon.hwang@linux.dev"
+vim.g.number = "relativenumber"
+
+vim.keymap.set("i", "kj", "<Esc>", {})
+vim.keymap.set("n", ",q", ":q<CR>", {})
+vim.keymap.set("n", ",w", ":w<CR>", {})
+-- vim.keymap.set("n", ",l", ":set list listchars=eol:↓,space:·,tab:⇥¬¬,trail:~<CR>", {})
+-- disable searching highlight
+vim.keymap.set("n", ",/", "<cmd>nohlsearch<CR>", {})
+vim.keymap.set("n", ",rr", "<cmd>Telescope lsp_references<CR>", {})
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
+vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set("n", ",bd", "<cmd>Bdelete<CR>", {})
+--[[ vim.keymap.set("t", ",wl", "<C-\\><C-n> <C-w>l", {}) ]]
+vim.keymap.set("n", ",rw", "gwip<cr>", {}) -- rewrap current comments
+vim.keymap.set("n", ",nf", "<cmd>NeoTreeFocus<cr>", {})
+vim.keymap.set("n", ",gs", "<cmd>Telescope grep_string<cr>", {})
+vim.g.neovide_input_macos_option_key_is_meta = "only_left"
+
+vim.api.nvim_create_user_command("Format", function(args)
+	local range = nil
+	if args.count ~= -1 then
+		local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+		range = {
+			start = { args.line1, 0 },
+			["end"] = { args.line2, end_line:len() },
+		}
+	end
+	require("conform").format({ async = true, lsp_format = "fallback", range = range })
+end, { range = true })
 
 require("lazy").setup({
 	spec = {
@@ -36,3 +89,8 @@ require("lazy").setup({
 -- Final settings
 require("core")
 pcall(require, "custom")
+
+vim.cmd([[
+noremap <expr> n (v:searchforward ? 'n' : 'N')
+noremap <expr> N (v:searchforward ? 'N' : 'n')
+]])

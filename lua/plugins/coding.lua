@@ -32,6 +32,26 @@ return {
 	{ "L3MON4D3/LuaSnip" }, -- install the LuaSnip engine
 	{ "onsails/lspkind.nvim" }, -- icons in autocomplete source
 
+	{
+		"delphinus/cmp-ctags",
+		dependencies = { "hrsh7th/nvim-cmp" },
+		config = function()
+			require("cmp").setup {
+				sources = {
+					{
+					name = "ctags",
+					-- default values
+					option = {
+						executable = "ctags",
+						trigger_characters = { "." },
+						trigger_characters_ft = {},
+					},
+					},
+				},
+			}
+		end,
+	},
+
 	-- todo comments
 	-- Preview
 	-- TODO: todo

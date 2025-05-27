@@ -11,7 +11,8 @@ return {
 		config = function()
 			require("barbecue").setup({
 				create_autocmd = false, -- prevent barbecue from updating itself automatically
-				theme = vim.g.hardhacker_barbecue_theme,
+				-- theme = vim.g.hardhacker_barbecue_theme,
+				theme = "tokyonight",
 			})
 
 			vim.api.nvim_create_autocmd({

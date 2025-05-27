@@ -4,9 +4,47 @@ return function()
 	-- Global mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
-	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-	vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+	vim.keymap.set("n", "[[", vim.diagnostic.goto_prev)
+	vim.keymap.set("n", "]]", vim.diagnostic.goto_next)
 	vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
+
+	-- local lspconfig = require("lspconfig")
+	local lsp_zero = require("lsp-zero")
+	lsp_zero.extend_lspconfig({
+		settings = {
+			gopls = {
+				analyses = {
+					unusedparams = true,
+				},
+				staticcheck = true,
+				gofumpt = true,
+				-- buildFlags = { "GOOS=linux" },
+			},
+		},
+	})
+
+	vim.api.nvim_create_autocmd("BufWritePre", {
+		pattern = "*.go",
+		callback = function()
+			local params = vim.lsp.util.make_range_params()
+			params.context = { only = { "source.organizeImports" } }
+			-- buf_request_sync defaults to a 1000ms timeout. Depending on your
+			-- machine and codebase, you may want longer. Add an additional
+			-- argument after params if you find that you have to write the file
+			-- twice for changes to be saved.
+			-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+			local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+			for cid, res in pairs(result or {}) do
+				for _, r in pairs(res.result or {}) do
+					if r.edit then
+						local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+						vim.lsp.util.apply_workspace_edit(r.edit, enc)
+					end
+				end
+			end
+			vim.lsp.buf.format({ async = false })
+		end,
+	})
 
 	-- Use LspAttach autocommand to only map the following keys
 	-- after the language server attaches to the current buffer
@@ -24,6 +62,7 @@ return function()
 			vim.keymap.set("n", require("custom_keys").goto_references, vim.lsp.buf.references, opts)
 			vim.keymap.set("n", require("custom_keys").goto_impl, vim.lsp.buf.implementation, opts)
 			vim.keymap.set("n", require("custom_keys").lsp_rename, vim.lsp.buf.rename, opts)
+			vim.keymap.set("n", require("custom_keys").lsp_code_action, vim.lsp.buf.code_action, opts)
 			vim.keymap.set("n", require("custom_keys").format, function()
 				vim.lsp.buf.format({ async = true })
 			end, opts)
@@ -38,5 +77,34 @@ return function()
 			vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
 			vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
 		end,
+	})
+
+	-- Diagnostic Config
+	-- See :help vim.diagnostic.Opts
+	vim.diagnostic.config({
+		severity_sort = true,
+		float = { border = "rounded", source = "if_many" },
+		underline = { severity = vim.diagnostic.severity.ERROR },
+		signs = vim.g.have_nerd_font and {
+			text = {
+				[vim.diagnostic.severity.ERROR] = "󰅚 ",
+				[vim.diagnostic.severity.WARN] = "󰀪 ",
+				[vim.diagnostic.severity.INFO] = "󰋽 ",
+				[vim.diagnostic.severity.HINT] = "󰌶 ",
+			},
+		} or {},
+		virtual_text = {
+			source = "if_many",
+			spacing = 2,
+			format = function(diagnostic)
+				local diagnostic_message = {
+					[vim.diagnostic.severity.ERROR] = diagnostic.message,
+					[vim.diagnostic.severity.WARN] = diagnostic.message,
+					[vim.diagnostic.severity.INFO] = diagnostic.message,
+					[vim.diagnostic.severity.HINT] = diagnostic.message,
+				}
+				return diagnostic_message[diagnostic.severity]
+			end,
+		},
 	})
 end

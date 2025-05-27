@@ -1,5 +1,17 @@
 return {
+	"folke/tokyonight.nvim",
+	lazy = false,
+	priority = 2000,
+	opts = { style = "day" },
+
 	{
+		"sho-87/kanagawa-paper.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = {},
+	},
+
+	--[[{
 		"hardhackerlabs/theme-vim",
 		name = "hardhacker",
 		lazy = false,
@@ -63,5 +75,5 @@ return {
 			})
 			vim.cmd("colorscheme kanagawa")
 		end,
-	},
+	},]]
 }

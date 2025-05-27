@@ -1,127 +1,129 @@
 return function()
-	--local colors = {
-	--	red = "#e965a5",
-	--	green = "#b1f2a7",
-	--	yellow = "#ebde76",
-	--	blue = "#b1baf4",
-	--	purple = "#e192ef",
-	--	cyan = "#b3f4f3",
-	--	white = "#eee9fc",
-	--	black = "#282433",
-	--	selection = "#282433",
-	--	comment = "#938aad",
-	--}
+	local colors = {
+		red = "#ca1243",
+		grey = "#a0a1a7",
+		black = "#383a42",
+		white = "#f3f3f3",
+		light_green = "#83a598",
+		orange = "#fe8019",
+		green = "#8ec07c",
+	}
 
-	--local hardhacker_theme = {
-	--	normal = {
-	--		a = { fg = colors.black, bg = colors.purple },
-	--		b = { fg = colors.red, bg = colors.selection },
-	--		c = { fg = colors.comment, bg = colors.selection },
-	--	},
+	local theme = {
+		normal = {
+			a = { fg = colors.white, bg = colors.black },
+			b = { fg = colors.white, bg = colors.grey },
+			c = { fg = colors.black, bg = colors.white },
+			z = { fg = colors.white, bg = colors.black },
+		},
+		insert = { a = { fg = colors.black, bg = colors.light_green } },
+		visual = { a = { fg = colors.black, bg = colors.orange } },
+		replace = { a = { fg = colors.black, bg = colors.green } },
+	}
 
-	--	insert = { a = { fg = colors.black, bg = colors.green } },
-	--	visual = { a = { fg = colors.black, bg = colors.yellow } },
-	--	replace = { a = { fg = colors.black, bg = colors.red } },
+	local empty = require("lualine.component"):extend()
+	function empty:draw(default_highlight)
+		self.status = ""
+		self.applied_separator = ""
+		self:apply_highlights(default_highlight)
+		self:apply_section_separators()
+		return self.status
+	end
 
-	--	inactive = {
-	--		a = { fg = colors.white, bg = colors.selection },
-	--		b = { fg = colors.white, bg = colors.selection },
-	--		c = { fg = colors.white, bg = colors.selection },
-	--	},
-	--}
+	-- Put proper separators and gaps between components in sections
+	local function process_sections(sections)
+		for name, section in pairs(sections) do
+			local left = name:sub(9, 10) < "x"
+			for pos = 1, name ~= "lualine_z" and #section or #section - 1 do
+				table.insert(section, pos * 2, { empty, color = { fg = colors.white, bg = colors.white } })
+			end
+			for id, comp in ipairs(section) do
+				if type(comp) ~= "table" then
+					comp = { comp }
+					section[id] = comp
+				end
+				comp.separator = left and { right = "" } or { left = "" }
+			end
+		end
+		return sections
+	end
+
+	local function search_result()
+		if vim.v.hlsearch == 0 then
+			return ""
+		end
+		local last_search = vim.fn.getreg("/")
+		if not last_search or last_search == "" then
+			return ""
+		end
+		local searchcount = vim.fn.searchcount({ maxcount = 9999 })
+		return last_search .. "(" .. searchcount.current .. "/" .. searchcount.total .. ")"
+	end
+
+	local function modified()
+		if vim.bo.modified then
+			return "+"
+		elseif vim.bo.modifiable == false or vim.bo.readonly == true then
+			return "-"
+		end
+		return ""
+	end
+
+	require("tokyonight").setup()
 
 	require("lualine").setup({
 		options = {
-			icons_enabled = true,
-			theme = vim.g.hardhacker_lualine_theme,
+			theme = theme,
 			component_separators = "",
-			section_separators = { left = "", right = "" },
-			disabled_filetypes = {
-				statusline = {},
-				winbar = {},
-			},
-			ignore_focus = {},
-			always_divide_middle = true,
-			globalstatus = true,
-			refresh = {
-				statusline = 1000,
-				tabline = 1000,
-				winbar = 1000,
-			},
+			section_separators = { left = "", right = "" },
+			-- section_separators = { left = "", right = "" },
 		},
-		sections = {
-			lualine_a = { { "mode", separator = { left = "" }, right_padding = 2 } },
+		sections = process_sections({
+			lualine_a = { "mode" },
 			lualine_b = {
-				{ "branch" },
-				{ "diff" },
-			},
-			lualine_c = {
+				"branch",
+				"diff",
 				{
-					"filename",
-					file_status = true, -- Displays file status (readonly status, modified status)
-					newfile_status = false, -- Display new file status (new file means no write after created)
-					path = 3, -- 0: Just the filename
-					-- 1: Relative path
-					-- 2: Absolute path
-					-- 3: Absolute path, with tilde as the home directory
-					-- 4: Filename and parent dir, with tilde as the home directory
-
-					shorting_target = 40, -- Shortens path to leave 40 spaces in the window
-					-- for other components. (terrible name, any suggestions?)
-					symbols = {
-						modified = "[+]", -- Text to show when the file is modified.
-						readonly = "[-]", -- Text to show when the file is non-modifiable or readonly.
-						unnamed = "[No Name]", -- Text to show for unnamed buffers.
-						newfile = "[New]", -- Text to show for newly created file before first write
-					},
+					"diagnostics",
+					source = { "nvim" },
+					sections = { "error" },
+					diagnostics_color = { error = { bg = colors.red, fg = colors.white } },
+				},
+				{
+					"diagnostics",
+					source = { "nvim" },
+					sections = { "warn" },
+					diagnostics_color = { warn = { bg = colors.orange, fg = colors.white } },
+				},
+				{ "filename", file_status = false, path = 1 },
+				{ modified, color = { bg = colors.red } },
+				{
+					"%w",
+					cond = function()
+						return vim.wo.previewwindow
+					end,
+				},
+				{
+					"%r",
+					cond = function()
+						return vim.bo.readonly
+					end,
+				},
+				{
+					"%q",
+					cond = function()
+						return vim.bo.buftype == "quickfix"
+					end,
 				},
 			},
-			lualine_x = {
-				"encoding",
-				"fileformat",
-				"filetype",
-			},
-			lualine_y = {
-				"%L",
-				"progress",
-				-- {
-				-- 	"diagnostics",
-
-				-- 	-- Table of diagnostic sources, available sources are:
-				-- 	--   'nvim_lsp', 'nvim_diagnostic', 'nvim_workspace_diagnostic', 'coc', 'ale', 'vim_lsp'.
-				-- 	-- or a function that returns a table as such:
-				-- 	--   { error=error_cnt, warn=warn_cnt, info=info_cnt, hint=hint_cnt }
-				-- 	sources = { "nvim_lsp", "nvim_diagnostic" },
-
-				-- 	-- Displays diagnostics for the defined severity types
-				-- 	sections = { "error", "warn", "info", "hint" },
-
-				-- 	diagnostics_color = {
-				-- 		-- Same values as the general color option can be used here.
-				-- 		error = "DiagnosticError", -- Changes diagnostics' error color.
-				-- 		warn = "DiagnosticWarn", -- Changes diagnostics' warn color.
-				-- 		info = "DiagnosticInfo", -- Changes diagnostics' info color.
-				-- 		hint = "DiagnosticHint", -- Changes diagnostics' hint color.
-				-- 	},
-				-- 	symbols = { error = " ", warn = " ", info = " ", hint = " " },
-				-- 	colored = true, -- Displays diagnostics status in color if set to true.
-				-- 	update_in_insert = false, -- Update diagnostics in insert mode.
-				-- 	always_visible = false, -- Show diagnostics even if there are none.
-				-- },
-			},
-			lualine_z = { { "location", separator = { right = "" }, left_padding = 2 } },
-		},
+			lualine_c = {},
+			lualine_x = {},
+			lualine_y = { search_result, "filetype", "filesize" },
+			lualine_z = { "%l:%c", "%p%%/%L" },
+		}),
 		inactive_sections = {
-			lualine_a = {},
-			lualine_b = {},
-			lualine_c = { "filename" },
-			lualine_x = { "location" },
-			lualine_y = {},
-			lualine_z = {},
+			lualine_c = { "%f %y %m" },
+			lualine_x = {},
 		},
-		tabline = {},
-		winbar = {},
-		inactive_winbar = {},
-		extensions = {},
 	})
 end

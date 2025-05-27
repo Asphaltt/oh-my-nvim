@@ -3,7 +3,7 @@
 --
 return {
 	-- The default '<leader>' is the space.
-	leader = " ",
+	leader = ",",
 
 	-- Use the shortcut to switch/jump window.
 	jump_left_window = "<C-h>",
@@ -67,4 +67,6 @@ return {
 	lsp_rename = "<leader>re",
 	-- Use the shortcut to format your codes.
 	format = "<leader>vv",
+	-- code action
+	lsp_code_action = "<leader>ca",
 }
