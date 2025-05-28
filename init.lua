@@ -44,19 +44,20 @@ vim.g.license_email = "leon.hwang@linux.dev"
 vim.g.number = "relativenumber"
 
 vim.keymap.set("i", "kj", "<Esc>", {})
-vim.keymap.set("n", ",q", ":q<CR>", {})
-vim.keymap.set("n", ",w", ":w<CR>", {})
+vim.keymap.set("n", "<leader>q", ":q<CR>", {})
+vim.keymap.set("n", "<leader>w", ":w<CR>", {})
 -- vim.keymap.set("n", ",l", ":set list listchars=eol:↓,space:·,tab:⇥¬¬,trail:~<CR>", {})
 -- disable searching highlight
-vim.keymap.set("n", ",/", "<cmd>nohlsearch<CR>", {})
-vim.keymap.set("n", ",rr", "<cmd>Telescope lsp_references<CR>", {})
+vim.keymap.set("n", "<leader>/", "<cmd>nohlsearch<CR>", {})
+vim.keymap.set("n", "<leader>rr", "<cmd>Telescope lsp_references<CR>", {})
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
-vim.keymap.set("n", ",bd", "<cmd>Bdelete<CR>", {})
---[[ vim.keymap.set("t", ",wl", "<C-\\><C-n> <C-w>l", {}) ]]
-vim.keymap.set("n", ",rw", "gwip<cr>", {}) -- rewrap current comments
-vim.keymap.set("n", ",nf", "<cmd>NeoTreeFocus<cr>", {})
-vim.keymap.set("n", ",gs", "<cmd>Telescope grep_string<cr>", {})
+vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", {})
+--[[ vim.keymap.set("t", "<leader>wl", "<C-\\><C-n> <C-w>l", {}) ]]
+vim.keymap.set("n", "<leader>rw", "gwip<cr>", {}) -- rewrap current comments
+vim.keymap.set("n", "<leader>nf", "<cmd>NeoTreeFocus<cr>", {})
+vim.keymap.set("n", "<leader>gs", "<cmd>Telescope grep_string<cr>", {})
+vim.keymap.set("n", "<leader>gd", "<cmd>FzfLua tags_grep_cword<cr>", {})
 vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 
 vim.api.nvim_create_user_command("Format", function(args)
