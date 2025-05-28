@@ -2,7 +2,7 @@ return {
 	"easymotion/vim-easymotion",
 	config = function()
 		vim.cmd([[
-source /Users/huayra/Projects/github/vim-easymotion/plugin/EasyMotion.vim
+source $HOME/.config/nvim/vim/easymotion/plugin/EasyMotion.vim
 
 let g:EasyMotion_smartcase = 1
 
