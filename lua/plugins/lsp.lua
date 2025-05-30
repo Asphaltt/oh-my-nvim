@@ -40,6 +40,22 @@ return {
 				capabilities = require("cmp_nvim_lsp").default_capabilities(),
 			})
 
+			local lspconfig = require("lspconfig")
+			lspconfig.gopls.setup({
+				cmd = { "gopls" },
+				filetypes = { "go", "gomod", "gowork", "gotmpl" },
+				root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+				settings = {
+					gopls = {
+						analyses = {
+							unusedparams = true,
+							shadow = true,
+						},
+						staticcheck = true,
+					},
+				},
+			})
+
 			-- require("mason-lspconfig").setup({
 			-- 	ensure_installed = {  "lua_ls", "gopls" },
 			-- 	handlers = {
@@ -55,10 +71,12 @@ return {
 
 	{
 		"mason-org/mason-lspconfig.nvim",
+		ensure_installed = { "lua_ls", "gopls", "python" },
+		automatic_installation = true,
 		opts = {},
 		dependencies = {
 			{ "mason-org/mason.nvim", opts = {} },
-			"neovim/nvim-lspconfig"
+			"neovim/nvim-lspconfig",
 		},
 		config = function()
 			require("mason-lspconfig").setup({
@@ -77,11 +95,34 @@ return {
 			-- 	--     require("rust-tools").setup {}
 			-- 	-- end
 			-- })
+			--
+			local lspconfig = require("lspconfig")
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+			lspconfig.gopls.setup({
+				capabilities = capabilities,
+			})
+
+			lspconfig.lua_ls.setup({
+				settings = {
+					Lua = {
+						diagnostics = {
+							enable = true,
+							globals = { "vim" }, -- prevent 'undefined global vim' warning
+						},
+						workspace = {
+							checkThirdParty = false,
+							library = vim.api.nvim_get_runtime_file("", true),
+						},
+						telemetry = { enable = false },
+					},
+				},
+			})
 		end,
 	},
 
 	{
-		"jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local null_ls = require("null-ls")
