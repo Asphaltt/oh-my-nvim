@@ -36,15 +36,7 @@ return {
 				},
 
 				-- Use a tempfile instead of stdin
-				go = {
-					formatters.shell({
-						cmd = { "goimports-reviser", "-rm-unused", "-set-alias", "-format", "%" },
-						tempfile = function()
-							return vim.fn.expand("%") .. ".formatter-temp"
-						end,
-					}),
-					formatters.shell({ cmd = { "gofumpt" } }),
-				},
+				go = formatters.lsp,
 
 				-- Add conditional formatter that only runs if a certain file exists
 				-- in one of the parent directories.
