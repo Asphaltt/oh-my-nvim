@@ -55,17 +55,6 @@ return {
 					},
 				},
 			})
-
-			-- require("mason-lspconfig").setup({
-			-- 	ensure_installed = {  "lua_ls", "gopls" },
-			-- 	handlers = {
-			-- 		-- this first function is the "default handler"
-			-- 		-- it applies to every language server without a "custom handler"
-			-- 		function(server_name)
-			-- 			require("lspconfig")[server_name].setup({})
-			-- 		end,
-			-- 	},
-			-- })
 		end,
 	},
 
@@ -82,20 +71,7 @@ return {
 				automatic_enable = false,
 				automatic_installation = true,
 			})
-			-- require("mason-lspconfig").setup_handlers({
-			-- 	-- The first entry (without a key) will be the default handler
-			-- 	-- and will be called for each installed server that doesn't have
-			-- 	-- a dedicated handler.
-			-- 	function(server_name) -- default handler (optional)
-			-- 		require("lspconfig")[server_name].setup({})
-			-- 	end,
-			-- 	-- Next, you can provide a dedicated handler for specific servers.
-			-- 	-- For example, a handler override for the `rust_analyzer`:
-			-- 	-- ["rust_analyzer"] = function ()
-			-- 	--     require("rust-tools").setup {}
-			-- 	-- end
-			-- })
-			--
+
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -149,19 +125,6 @@ return {
 				sources = nil,
 				temp_dir = nil,
 				update_in_insert = false,
-				-- formatting on save
-				--on_attach = function(client, bufnr)
-				--	if client.supports_method("textDocument/formatting") then
-				--		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-				--		vim.api.nvim_create_autocmd("BufWritePre", {
-				--			group = augroup,
-				--			buffer = bufnr,
-				--			callback = function()
-				--				vim.lsp.buf.format({ bufnr = bufnr })
-				--			end,
-				--		})
-				--	end
-				--end,
 			}) -- end of setup
 		end,
 	},
