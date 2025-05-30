@@ -30,6 +30,8 @@ if vim.g.neovide then
 	-- vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
 	-- vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
 	-- vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+
+	vim.opt.termguicolors = true
 end
 
 vim.g.mapleader = require("custom_keys").leader
@@ -101,7 +103,7 @@ require("lazy").setup({
 	},
 	change_detection = {
 		enabled = true,
-		notify = true, -- get a notification when changes are found
+		notify = false, -- get a notification when changes are found
 	},
 })
 

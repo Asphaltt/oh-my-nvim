@@ -71,8 +71,6 @@ return {
 
 	{
 		"mason-org/mason-lspconfig.nvim",
-		ensure_installed = { "lua_ls", "gopls", "python" },
-		automatic_installation = true,
 		opts = {},
 		dependencies = {
 			{ "mason-org/mason.nvim", opts = {} },
@@ -80,7 +78,9 @@ return {
 		},
 		config = function()
 			require("mason-lspconfig").setup({
+				ensure_installed = { "lua_ls", "clangd", "gopls" },
 				automatic_enable = false,
+				automatic_installation = true,
 			})
 			-- require("mason-lspconfig").setup_handlers({
 			-- 	-- The first entry (without a key) will be the default handler
@@ -115,6 +115,9 @@ return {
 							library = vim.api.nvim_get_runtime_file("", true),
 						},
 						telemetry = { enable = false },
+						completion = {
+							callSnippet = "Replace",
+						},
 					},
 				},
 			})
@@ -168,7 +171,7 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
 			"williamboman/mason.nvim",
-			"jose-elias-alvarez/null-ls.nvim",
+			"nvimtools/none-ls.nvim",
 		},
 		config = function()
 			require("mason-null-ls").setup({
