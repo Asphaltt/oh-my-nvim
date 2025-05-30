@@ -21,34 +21,38 @@ return {
 	-- auto completion
 	{
 		"hrsh7th/nvim-cmp",
+		version = false,
+		event = "InsertEnter",
+		dependencies = {
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-path" },
+			{ "hrsh7th/cmp-cmdline" },
+			{ "L3MON4D3/LuaSnip" }, -- install the LuaSnip engine
+			{ "onsails/lspkind.nvim" }, -- icons in autocomplete source
+		},
 		config = function()
 			require("plugins/autocmp/config")()
 		end,
 	},
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
-	{ "hrsh7th/cmp-cmdline" },
-	{ "L3MON4D3/LuaSnip" }, -- install the LuaSnip engine
-	{ "onsails/lspkind.nvim" }, -- icons in autocomplete source
 
 	{
 		"delphinus/cmp-ctags",
 		dependencies = { "hrsh7th/nvim-cmp" },
 		config = function()
-			require("cmp").setup {
+			require("cmp").setup({
 				sources = {
 					{
-					name = "ctags",
-					-- default values
-					option = {
-						executable = "ctags",
-						trigger_characters = { "." },
-						trigger_characters_ft = {},
-					},
+						name = "ctags",
+						-- default values
+						option = {
+							executable = "ctags",
+							trigger_characters = { "." },
+							trigger_characters_ft = {},
+						},
 					},
 				},
-			}
+			})
 		end,
 	},
 
