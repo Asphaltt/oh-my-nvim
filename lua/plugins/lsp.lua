@@ -33,6 +33,8 @@ return {
 		config = function()
 			require("plugins/lspconfig/config")()
 
+			require("lspconfig").clangd.setup({})
+
 			local lsp_zero = require("lsp-zero")
 
 			lsp_zero.extend_lspconfig({
