@@ -10,18 +10,18 @@ return function()
 
 	-- local lspconfig = require("lspconfig")
 	local lsp_zero = require("lsp-zero")
-	lsp_zero.extend_lspconfig({
-		settings = {
-			gopls = {
-				analyses = {
-					unusedparams = true,
-				},
-				staticcheck = true,
-				gofumpt = true,
-				-- buildFlags = { "GOOS=linux" },
-			},
-		},
-	})
+	-- lsp_zero.extend_lspconfig({
+	--     settings = {
+	--         gopls = {
+	--             analyses = {
+	--                 unusedparams = true,
+	--             },
+	--             staticcheck = true,
+	--             gofumpt = true,
+	--             -- buildFlags = { "GOOS=linux" },
+	--         },
+	--     },
+	-- })
 
 	vim.api.nvim_create_autocmd("BufWritePre", {
 		pattern = "*.go",
