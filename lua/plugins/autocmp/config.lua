@@ -2,6 +2,10 @@ return function()
 	local cmp = require("cmp")
 
 	cmp.setup({
+		preselect = "item",
+		completion = {
+			completeopt = "menu,menuone,noinsert",
+		},
 		snippet = {
 			-- Select the luasnip engine here. You can switch to another engine.
 			expand = function(args)
@@ -25,6 +29,8 @@ return function()
 		formatting = {
 			format = require("lspkind").cmp_format({
 				mode = "symbol_text",
+				maxwidth = 50,
+				ellipsis_char = "...",
 			}),
 		},
 		mapping = cmp.mapping.preset.insert({
