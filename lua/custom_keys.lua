@@ -67,6 +67,7 @@ return {
 	lsp_rename = "<leader>re",
 	-- Use the shortcut to format your codes.
 	format = "<leader>vv",
+	conform = "<leader>cF",
 	-- code action
 	lsp_code_action = "<leader>ca",
 }
