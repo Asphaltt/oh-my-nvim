@@ -133,6 +133,16 @@ local function set_keymap()
 
 	-- Supported by nvim-session-manager
 	map("n", keys.switch_session, ":SessionManager load_session<CR>", option)
+
+	map("i", "kj", "<Esc>", {})
+	map("n", "<leader>q", ":q<CR>", {})
+	map("n", "<leader>w", ":w<CR>", {})
+	map("n", "<leader>/", "<cmd>nohlsearch<CR>", {})
+
+	vim.cmd([[
+noremap <expr> n (v:searchforward ? 'n' : 'N')
+noremap <expr> N (v:searchforward ? 'N' : 'n')
+]])
 end
 
 -- Set up transparency
