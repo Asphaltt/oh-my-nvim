@@ -45,6 +45,8 @@ vim.g.license_author = "Leon Hwang"
 vim.g.license_email = "leon.hwang@linux.dev"
 vim.g.number = "relativenumber"
 
+vim.opt.tags = ".tags"
+
 vim.keymap.set("i", "kj", "<Esc>", {})
 vim.keymap.set("n", "<leader>q", ":q<CR>", {})
 vim.keymap.set("n", "<leader>w", ":w<CR>", {})
