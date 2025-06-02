@@ -44,9 +44,7 @@ vim.g.license_author = "Leon Hwang"
 vim.g.license_email = "leon.hwang@linux.dev"
 vim.g.number = "relativenumber"
 
-vim.opt.cursorcolumn = true
 vim.opt.tags = ".tags"
-vim.opt.wrap = true
 
 vim.keymap.set("n", "<leader>rr", "<cmd>Telescope lsp_references<CR>", {})
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
