@@ -33,8 +33,6 @@ return {
 		config = function()
 			require("plugins/lspconfig/config")()
 
-			require("lspconfig").clangd.setup({})
-
 			local lsp_zero = require("lsp-zero")
 
 			lsp_zero.extend_lspconfig({
@@ -154,6 +152,8 @@ return {
 	{
 		"p00f/clangd_extensions.nvim",
 		config = function()
+			require("lspconfig").clangd.setup({})
+
 			require("clangd_extensions").setup({
 				inlay_hints = {
 					inline = vim.fn.has("nvim-0.10") == 1,
