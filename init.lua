@@ -32,12 +32,12 @@ if vim.g.neovide then
 	-- vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
 
 	vim.opt.termguicolors = true
+	vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 end
 
 vim.g.mapleader = require("custom_keys").leader
 vim.g.maplocalleader = ","
 vim.g.colorcolumn = "75,80,100,120"
-vim.opt.cursorcolumn = true
 vim.g.colors_name = "tokyonight"
 -- vim.env.GOOS = "linux"
 vim.g.background = "light"
@@ -45,7 +45,9 @@ vim.g.license_author = "Leon Hwang"
 vim.g.license_email = "leon.hwang@linux.dev"
 vim.g.number = "relativenumber"
 
+vim.opt.cursorcolumn = true
 vim.opt.tags = ".tags"
+vim.opt.wrap = true
 
 vim.keymap.set("i", "kj", "<Esc>", {})
 vim.keymap.set("n", "<leader>q", ":q<CR>", {})
@@ -56,13 +58,10 @@ vim.keymap.set("n", "<leader>/", "<cmd>nohlsearch<CR>", {})
 vim.keymap.set("n", "<leader>rr", "<cmd>Telescope lsp_references<CR>", {})
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
-vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", {})
 --[[ vim.keymap.set("t", "<leader>wl", "<C-\\><C-n> <C-w>l", {}) ]]
 vim.keymap.set("n", "<leader>rw", "gwip<cr>", {}) -- rewrap current comments
 vim.keymap.set("n", "<leader>nf", "<cmd>NeoTreeFocus<cr>", {})
-vim.keymap.set("n", "<leader>gs", "<cmd>Telescope grep_string<cr>", {})
 vim.keymap.set("n", "<leader>gd", "<cmd>FzfLua tags_grep_cword<cr>", {})
-vim.g.neovide_input_macos_option_key_is_meta = "only_left"
 
 vim.api.nvim_create_user_command("Format", function(args)
 	local range = nil
