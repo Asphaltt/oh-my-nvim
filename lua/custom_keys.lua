@@ -38,7 +38,7 @@ return {
 	-- Use the shortcut to find, search files and find buffers.
 	find_files = "<leader>ff",
 	live_grep = "<leader>gg",
-	search_cursor = "<leader>cc",
+	search_cursor = "<leader>gs",
 	find_buffer = "<leader>bb",
 	-- Use the to close telescope window. <C-c> is the default setting, can't edit it here.
 	-- close_telescope  = "<C-c>",
