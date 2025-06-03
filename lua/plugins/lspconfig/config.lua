@@ -8,20 +8,33 @@ return function()
 	vim.keymap.set("n", "]]", vim.diagnostic.goto_next)
 	vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
 
-	-- local lspconfig = require("lspconfig")
 	local lsp_zero = require("lsp-zero")
-	-- lsp_zero.extend_lspconfig({
-	--     settings = {
-	--         gopls = {
-	--             analyses = {
-	--                 unusedparams = true,
-	--             },
-	--             staticcheck = true,
-	--             gofumpt = true,
-	--             -- buildFlags = { "GOOS=linux" },
-	--         },
-	--     },
-	-- })
+	lsp_zero.extend_lspconfig({
+		sign_text = true,
+		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	})
+
+	local lspconfig = require("lspconfig")
+	lspconfig.gopls.setup({
+		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+		cmd = { "gopls" },
+		cmd_env = {
+			GOOS = "linux",
+		},
+		filetypes = { "go", "gomod", "gowork", "gotmpl" },
+		root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+		settings = {
+			gopls = {
+				analyses = {
+					unusedparams = true,
+					shadow = true,
+				},
+				staticcheck = true,
+				gofumpt = true,
+				buildFlags = { "-tags=amd64" },
+			},
+		},
+	})
 
 	vim.api.nvim_create_autocmd("BufWritePre", {
 		pattern = "*.go",
