@@ -2,9 +2,15 @@ return function()
 	local cmp = require("cmp")
 
 	cmp.setup({
+		visible = true,
 		preselect = "item",
 		completion = {
+			autocomplete = {
+				cmp.TriggerEvent.TextChanged,
+				cmp.TriggerEvent.InsertEnter,
+			},
 			completeopt = "menu,menuone,noinsert",
+			keyword_length = 0,
 		},
 		snippet = {
 			-- Select the luasnip engine here. You can switch to another engine.
@@ -16,15 +22,8 @@ return function()
 			end,
 		},
 		window = {
-			completion = cmp.config.window.bordered({
-				border = "rounded",
-				winhighlight = "",
-				minwidth = 60,
-			}),
-			documentation = cmp.config.window.bordered({
-				border = "rounded",
-				winhighlight = "",
-			}),
+			completion = cmp.config.window.bordered(),
+			documentation = cmp.config.window.bordered(),
 		},
 		formatting = {
 			format = require("lspkind").cmp_format({
@@ -39,17 +38,51 @@ return function()
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-			["<Tab>"] = function(fallback)
+
+			-- https://lsp-zero.netlify.app/docs/autocomplete.html#enable-super-tab
+			-- Super tab
+			["<Tab>"] = cmp.mapping(function(fallback)
+				local luasnip = require("luasnip")
+				local col = vim.fn.col(".") - 1
+
 				if cmp.visible() then
-					cmp.select_next_item()
+					cmp.select_next_item({ behavior = "select" })
+				elseif luasnip.expand_or_locally_jumpable() then
+					luasnip.expand_or_jump()
+				elseif col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
+					fallback()
+				else
+					cmp.complete()
+				end
+			end, { "i", "s" }),
+
+			-- Super shift tab
+			["<S-Tab>"] = cmp.mapping(function(fallback)
+				local luasnip = require("luasnip")
+
+				if cmp.visible() then
+					cmp.select_prev_item({ behavior = "select" })
+				elseif luasnip.locally_jumpable(-1) then
+					luasnip.jump(-1)
 				else
 					fallback()
 				end
-			end,
+			end, { "i", "s" }),
 		}),
 		sources = cmp.config.sources({
 			{ name = "nvim_lsp" },
-			-- { name = "copilot" },
+			{ name = "git" },
+			{ name = "luasnip" },
+			{
+				name = "go_deep",
+				keyword_length = 3,
+				max_item_count = 5,
+				---@module "cmp_go_deep"
+				---@type cmp_go_deep.Options
+				option = {
+					-- See below for configuration options
+				},
+			},
 		}, {
 			{ name = "buffer" },
 			{ name = "path" },

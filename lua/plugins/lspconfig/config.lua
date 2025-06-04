@@ -4,25 +4,52 @@ return function()
 	-- Global mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
-	vim.keymap.set("n", "[[", vim.diagnostic.goto_prev)
-	vim.keymap.set("n", "]]", vim.diagnostic.goto_next)
 	vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
+
+	-- Very important
+	-- Load Mason first
+	require("mason").setup()
+
+	-- Setup neovim lua configuration
+	require("neodev").setup()
+
+	-- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 	local lsp_zero = require("lsp-zero")
 	lsp_zero.extend_lspconfig({
 		sign_text = true,
-		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+		capabilities = capabilities,
 	})
 
-	local lspconfig = require("lspconfig")
-	lspconfig.gopls.setup({
-		capabilities = require("cmp_nvim_lsp").default_capabilities(),
-		cmd = { "gopls" },
+	vim.lsp.enable("ast_grep")
+	vim.lsp.enable("basic")
+	vim.lsp.enable("clangd")
+
+	vim.lsp.config("lua_ls", {
+		settings = {
+			Lua = {
+				diagnostics = {
+					enable = true,
+					globals = { "vim" }, -- prevent 'undefined global vim' warning
+				},
+				workspace = {
+					checkThirdParty = false,
+					library = vim.api.nvim_get_runtime_file("", true),
+				},
+				telemetry = { enable = false },
+				completion = {
+					callSnippet = "Replace",
+				},
+			},
+		},
+	})
+	vim.lsp.config("gopls", {
+		capabilities = capabilities,
 		cmd_env = {
 			GOOS = "linux",
 		},
-		filetypes = { "go", "gomod", "gowork", "gotmpl" },
-		root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
 		settings = {
 			gopls = {
 				analyses = {
@@ -34,29 +61,6 @@ return function()
 				buildFlags = { "-tags=amd64" },
 			},
 		},
-	})
-
-	vim.api.nvim_create_autocmd("BufWritePre", {
-		pattern = "*.go",
-		callback = function()
-			local params = vim.lsp.util.make_range_params()
-			params.context = { only = { "source.organizeImports" } }
-			-- buf_request_sync defaults to a 1000ms timeout. Depending on your
-			-- machine and codebase, you may want longer. Add an additional
-			-- argument after params if you find that you have to write the file
-			-- twice for changes to be saved.
-			-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-			local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
-			for cid, res in pairs(result or {}) do
-				for _, r in pairs(res.result or {}) do
-					if r.edit then
-						local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
-						vim.lsp.util.apply_workspace_edit(r.edit, enc)
-					end
-				end
-			end
-			vim.lsp.buf.format({ async = false })
-		end,
 	})
 
 	-- Use LspAttach autocommand to only map the following keys

@@ -28,7 +28,12 @@ return {
 		cmd = { "LspInfo", "LspInstall", "LspStart" },
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
+			{ "mason-org/mason.nvim", opts = {} },
 			{ "hrsh7th/cmp-nvim-lsp" },
+
+			-- Additional lua configuration, makes nvim stuff amazing!
+			"folke/neodev.nvim",
+			"ray-x/lsp_signature.nvim",
 		},
 		config = function()
 			require("plugins/lspconfig/config")()
@@ -37,83 +42,52 @@ return {
 
 	{
 		"mason-org/mason-lspconfig.nvim",
-		opts = {},
 		dependencies = {
 			{ "mason-org/mason.nvim", opts = {} },
 			"neovim/nvim-lspconfig",
 		},
-		config = function()
-			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "clangd", "gopls" },
-				automatic_enable = false,
-				automatic_installation = true,
-			})
-
-			local lspconfig = require("lspconfig")
-			lspconfig.lua_ls.setup({
-				settings = {
-					Lua = {
-						diagnostics = {
-							enable = true,
-							globals = { "vim" }, -- prevent 'undefined global vim' warning
-						},
-						workspace = {
-							checkThirdParty = false,
-							library = vim.api.nvim_get_runtime_file("", true),
-						},
-						telemetry = { enable = false },
-						completion = {
-							callSnippet = "Replace",
-						},
-					},
-				},
-			})
-		end,
+		opts = {
+			ensure_installed = { "lua_ls", "clangd", "gopls" },
+			automatic_enable = false,
+			automatic_installation = true,
+		},
 	},
 
 	{
 		"nvimtools/none-ls.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		config = function()
-			local null_ls = require("null-ls")
-			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-			null_ls.setup({
-				border = "rounded",
-				cmd = { "nvim" },
-				debounce = 250,
-				debug = false,
-				default_timeout = 5000,
-				diagnostic_config = {},
-				diagnostics_format = "#{m}",
-				fallback_severity = vim.diagnostic.severity.ERROR,
-				log_level = "warn",
-				notify_format = "[null-ls] %s",
-				on_init = nil,
-				on_exit = nil,
-				root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
-				should_attach = nil,
-				sources = nil,
-				temp_dir = nil,
-				update_in_insert = false,
-			}) -- end of setup
-		end,
+		opts = {
+			border = "rounded",
+			cmd = { "nvim" },
+			debounce = 250,
+			debug = false,
+			default_timeout = 5000,
+			diagnostic_config = {},
+			diagnostics_format = "#{m}",
+			fallback_severity = vim.diagnostic.severity.ERROR,
+			log_level = "warn",
+			notify_format = "[null-ls] %s",
+			on_init = nil,
+			on_exit = nil,
+			-- root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
+			should_attach = nil,
+			sources = nil,
+			temp_dir = nil,
+			update_in_insert = false,
+		},
 	},
 
 	{
 		"jay-babu/mason-null-ls.nvim",
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
-			"williamboman/mason.nvim",
+			"mason-org/mason.nvim",
 			"nvimtools/none-ls.nvim",
 		},
-		config = function()
-			require("mason-null-ls").setup({
-				automatic_setup = true,
-				ensure_installed = { "shfmt", "prettier", "stylua" },
-				handlers = {},
-			})
-		end,
+		opts = {
+			automatic_setup = true,
+			ensure_installed = { "shfmt", "prettier", "stylua" },
+		},
 	},
 
 	{
