@@ -7,28 +7,25 @@ return {
 	},
 
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		lazy = false,
-		config = function()
-			require("mason").setup({
-				ui = {
-					icons = {
-						package_installed = "✓",
-						package_pending = "➜",
-						package_uninstalled = "✗",
-					},
-					border = "rounded",
+		opts = {
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
 				},
-			})
-		end,
+				border = "rounded",
+			},
+		},
 	},
 
 	{
 		"neovim/nvim-lspconfig",
-		cmd = { "LspInfo", "LspInstall", "LspStart" },
-		event = { "BufReadPre", "BufNewFile" },
+		event = { "BufReadPre", "BufNewFile", "InsertEnter" },
 		dependencies = {
-			{ "mason-org/mason.nvim", opts = {} },
+			{ "mason-org/mason.nvim" },
 			{ "hrsh7th/cmp-nvim-lsp" },
 
 			-- Additional lua configuration, makes nvim stuff amazing!
@@ -49,7 +46,6 @@ return {
 		opts = {
 			ensure_installed = { "lua_ls", "clangd", "gopls" },
 			automatic_enable = false,
-			automatic_installation = true,
 		},
 	},
 
@@ -127,25 +123,6 @@ return {
 					priority = 100,
 				},
 				ast = {
-					--[[ These are unicode, should be available in any font
-					role_icons = {
-						type = "🄣",
-						declaration = "🄓",
-						expression = "🄔",
-						statement = ";",
-						specifier = "🄢",
-						["template argument"] = "🆃",
-					},
-					kind_icons = {
-						Compound = "🄲",
-						Recovery = "🅁",
-						TranslationUnit = "🅄",
-						PackExpansion = "🄿",
-						TemplateTypeParm = "🅃",
-						TemplateTemplateParm = "🅃",
-						TemplateParamObject = "🅃",
-					},]]
-					-- These require codicons (https://github.com/microsoft/vscode-codicons)
 					role_icons = {
 						type = "",
 						declaration = "",
@@ -176,9 +153,6 @@ return {
 					border = "none",
 				},
 			})
-
-			-- require("clangd_extensions.inlay_hints").setup_autocmd()
-			-- require("clangd_extensions.inlay_hints").set_inlay_hints()
 		end,
 	},
 }

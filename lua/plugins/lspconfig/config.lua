@@ -6,10 +6,6 @@ return function()
 	vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 	vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
 
-	-- Very important
-	-- Load Mason first
-	require("mason").setup()
-
 	-- Setup neovim lua configuration
 	require("neodev").setup()
 
@@ -21,46 +17,6 @@ return function()
 	lsp_zero.extend_lspconfig({
 		sign_text = true,
 		capabilities = capabilities,
-	})
-
-	vim.lsp.enable("ast_grep")
-	vim.lsp.enable("basic")
-	vim.lsp.enable("clangd")
-
-	vim.lsp.config("lua_ls", {
-		settings = {
-			Lua = {
-				diagnostics = {
-					enable = true,
-					globals = { "vim" }, -- prevent 'undefined global vim' warning
-				},
-				workspace = {
-					checkThirdParty = false,
-					library = vim.api.nvim_get_runtime_file("", true),
-				},
-				telemetry = { enable = false },
-				completion = {
-					callSnippet = "Replace",
-				},
-			},
-		},
-	})
-	vim.lsp.config("gopls", {
-		capabilities = capabilities,
-		cmd_env = {
-			GOOS = "linux",
-		},
-		settings = {
-			gopls = {
-				analyses = {
-					unusedparams = true,
-					shadow = true,
-				},
-				staticcheck = true,
-				gofumpt = true,
-				buildFlags = { "-tags=amd64" },
-			},
-		},
 	})
 
 	-- Use LspAttach autocommand to only map the following keys
