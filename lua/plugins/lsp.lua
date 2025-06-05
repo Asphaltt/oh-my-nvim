@@ -29,7 +29,6 @@ return {
 			{ "hrsh7th/cmp-nvim-lsp" },
 
 			-- Additional lua configuration, makes nvim stuff amazing!
-			"folke/neodev.nvim",
 			"ray-x/lsp_signature.nvim",
 		},
 		config = function()
@@ -52,25 +51,32 @@ return {
 	{
 		"nvimtools/none-ls.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = {
-			border = "rounded",
-			cmd = { "nvim" },
-			debounce = 250,
-			debug = false,
-			default_timeout = 5000,
-			diagnostic_config = {},
-			diagnostics_format = "#{m}",
-			fallback_severity = vim.diagnostic.severity.ERROR,
-			log_level = "warn",
-			notify_format = "[null-ls] %s",
-			on_init = nil,
-			on_exit = nil,
-			-- root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
-			should_attach = nil,
-			sources = nil,
-			temp_dir = nil,
-			update_in_insert = false,
-		},
+		config = function()
+			local null_ls = require("null-ls")
+			null_ls.setup({
+				border = "rounded",
+				cmd = { "nvim" },
+				debounce = 250,
+				debug = false,
+				default_timeout = 5000,
+				diagnostic_config = {},
+				diagnostics_format = "#{m}",
+				fallback_severity = vim.diagnostic.severity.ERROR,
+				log_level = "warn",
+				notify_format = "[null-ls] %s",
+				on_init = nil,
+				on_exit = nil,
+				root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
+				should_attach = nil,
+				sources = {
+					null_ls.builtins.formatting.stylua,
+					-- null_ls.builtins.diagnostics.codespell,
+					-- null_ls.builtins.diagnostics.golangci_lint,
+				},
+				temp_dir = nil,
+				update_in_insert = false,
+			})
+		end,
 	},
 
 	{
