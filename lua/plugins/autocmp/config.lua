@@ -74,13 +74,12 @@ return function()
 			{ name = "git" },
 			{ name = "luasnip" },
 			{
-				name = "go_deep",
-				keyword_length = 3,
-				max_item_count = 5,
-				---@module "cmp_go_deep"
-				---@type cmp_go_deep.Options
+				name = "ctags",
+				-- default values
 				option = {
-					-- See below for configuration options
+					executable = "ctags",
+					trigger_characters = { "." },
+					trigger_characters_ft = {},
 				},
 			},
 		}, {

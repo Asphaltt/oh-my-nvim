@@ -1,3 +1,3 @@
 return {
-	dir = "~/Projects/leonhwang/spdx.nvim",
+	dir = vim.fn.stdpath("config") .. "/spdx.nvim",
 }

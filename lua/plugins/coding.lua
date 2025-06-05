@@ -25,34 +25,14 @@ return {
 			{ "hrsh7th/cmp-path" },
 			{ "hrsh7th/cmp-cmdline" },
 			{ "hrsh7th/cmp-emoji" },
+			{ "delphinus/cmp-ctags" },
 			{ "petertriho/cmp-git" },
 			{ "L3MON4D3/LuaSnip" }, -- install the LuaSnip engine
 			{ "onsails/lspkind.nvim" }, -- icons in autocomplete source
-			{ "samiulsami/cmp-go-deep", dependencies = { "kkharji/sqlite.lua" } },
 		},
 		config = function()
 			require("cmp_git").setup()
 			require("plugins/autocmp/config")()
-		end,
-	},
-
-	{
-		"delphinus/cmp-ctags",
-		dependencies = { "hrsh7th/nvim-cmp" },
-		config = function()
-			require("cmp").setup({
-				sources = {
-					{
-						name = "ctags",
-						-- default values
-						option = {
-							executable = "ctags",
-							trigger_characters = { "." },
-							trigger_characters_ft = {},
-						},
-					},
-				},
-			})
 		end,
 	},
 

@@ -165,10 +165,8 @@ local function set_autocmd()
 end
 
 local function enable_lang_servers()
-	vim.lsp.enable("ast_grep")
-	vim.lsp.enable("clangd")
 	vim.lsp.config("basics_ls", {
-		cmd = { "$HOME/homebrew/bin/basics-language-server" },
+		cmd = { vim.fn.expand("~/homebrew/bin/basics-language-server") },
 		settings = {
 			buffer = {
 				enable = true,
@@ -185,6 +183,12 @@ local function enable_lang_servers()
 	})
 	vim.lsp.config("lua_ls", require("plugins/lspconfig/luals"))
 	vim.lsp.config("gopls", require("plugins/lspconfig/gopls"))
+
+	vim.lsp.enable("ast_grep")
+	vim.lsp.enable("basics_ls")
+	vim.lsp.enable("clangd")
+	vim.lsp.enable("gopls")
+	vim.lsp.enable("lua_ls")
 end
 
 set_keymap()
