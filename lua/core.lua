@@ -166,7 +166,6 @@ end
 
 local function enable_lang_servers()
 	vim.lsp.config("basics_ls", {
-		cmd = { vim.fn.expand("~/homebrew/bin/basics-language-server") },
 		settings = {
 			buffer = {
 				enable = true,

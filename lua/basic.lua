@@ -1,5 +1,8 @@
 HOME = os.getenv("HOME")
 
+-- PATH
+vim.env.PATH = HOME .. "/homebrew/bin" .. ":" .. vim.env.PATH
+
 vim.opt.termguicolors = true
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
