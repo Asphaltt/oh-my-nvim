@@ -21,10 +21,10 @@ return function()
 				-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
 			end,
 		},
-		window = {
+		window = cmp.config.window ~= nil and {
 			completion = cmp.config.window.bordered(),
 			documentation = cmp.config.window.bordered(),
-		},
+		} or {},
 		formatting = {
 			format = require("lspkind").cmp_format({
 				mode = "symbol_text",
