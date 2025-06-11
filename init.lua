@@ -50,7 +50,7 @@ vim.keymap.set("n", "<leader>rr", "<cmd>Telescope lsp_references<CR>", {})
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
 vim.keymap.set("n", "<leader>rw", "gwip<cr>", {}) -- rewrap current comments
-vim.keymap.set("n", "<leader>nf", "<cmd>NeoTreeFocus<cr>", {})
+vim.keymap.set("n", "<leader>nf", "<cmd>Neotree focus<cr>", {})
 vim.keymap.set("n", "<leader>gd", "<cmd>FzfLua tags_grep_cword<cr>", {})
 
 require("lazy").setup({
