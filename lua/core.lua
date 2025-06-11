@@ -188,6 +188,8 @@ local function enable_lang_servers()
 	vim.lsp.enable("clangd")
 	vim.lsp.enable("gopls")
 	vim.lsp.enable("lua_ls")
+	vim.lsp.enable("pyrefly")
+	vim.lsp.enable("yamlls")
 end
 
 set_keymap()
