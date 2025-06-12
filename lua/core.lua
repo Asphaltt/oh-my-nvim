@@ -162,6 +162,11 @@ local function set_autocmd()
 			vim.cmd("colorscheme" .. " " .. current_colorscheme)
 		end,
 	})
+
+	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+		pattern = { "*" },
+		command = [[%s/\s\+$//e]],
+	})
 end
 
 local function enable_lang_servers()
