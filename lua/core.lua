@@ -167,6 +167,18 @@ local function set_autocmd()
 		pattern = { "*" },
 		command = [[%s/\s\+$//e]],
 	})
+
+	-- Create an autocommand group for git commits
+	vim.api.nvim_create_augroup("gitcommit", { clear = true })
+	-- Set a custom filetype and other options for COMMIT_EDITMSG
+	vim.api.nvim_create_autocmd("BufRead", {
+		group = "gitcommit",
+		pattern = "COMMIT_EDITMSG",
+		callback = function()
+			vim.bo.filetype = "gitcommit" -- Explicitly set the file type
+			-- The configs for COMMIT_EDITMSG will be in ftplugin/gitcommit.lua
+		end,
+	})
 end
 
 local function enable_lang_servers()
