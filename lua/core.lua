@@ -179,6 +179,18 @@ local function set_autocmd()
 			-- The configs for COMMIT_EDITMSG will be in ftplugin/gitcommit.lua
 		end,
 	})
+
+	-- Create an autocommand group for patch files
+	vim.api.nvim_create_augroup("patch", { clear = true })
+	-- Set a custom filetype and other options for patch files
+	vim.api.nvim_create_autocmd("BufRead", {
+		group = "patch",
+		pattern = { ".*.patch" },
+		callback = function()
+			vim.bo.filetype = "patch" -- Explicitly set the file type
+			-- The configs for patch files will be in ftplugin/patch.lua
+		end,
+	})
 end
 
 local function enable_lang_servers()
