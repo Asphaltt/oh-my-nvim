@@ -191,6 +191,12 @@ local function set_autocmd()
 			-- The configs for patch files will be in ftplugin/patch.lua
 		end,
 	})
+
+	vim.api.nvim_create_user_command("TabStop8", function()
+		vim.opt.expandtab = true
+		vim.opt.tabstop = 8
+		vim.opt.shiftwidth = 8
+	end, {})
 end
 
 local function enable_lang_servers()
