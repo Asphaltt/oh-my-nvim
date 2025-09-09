@@ -1,8 +1,12 @@
 return {
-	"folke/tokyonight.nvim",
-	lazy = false,
-	priority = 2000,
-	opts = { style = "day" },
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 2000,
+		opts = { style = "day" },
+	},
+
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
 	{
 		"sho-87/kanagawa-paper.nvim",

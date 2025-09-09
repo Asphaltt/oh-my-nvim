@@ -38,7 +38,7 @@ end
 vim.g.mapleader = require("custom_keys").leader
 vim.g.maplocalleader = ","
 vim.g.colorcolumn = "75,80,100,120"
-vim.g.colors_name = "tokyonight"
+vim.g.colors_name = require("custom_keys").colorscheme
 vim.g.background = "light"
 vim.g.license_author = "Leon Hwang"
 vim.g.license_email = "leon.hwang@linux.dev"

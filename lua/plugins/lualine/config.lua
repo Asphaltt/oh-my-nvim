@@ -73,7 +73,7 @@ return function()
 
 	require("lualine").setup({
 		options = {
-			theme = theme,
+			theme = require("custom_keys").colorscheme,
 			component_separators = "",
 			section_separators = { left = "", right = "" },
 			-- section_separators = { left = "", right = "" },
@@ -95,8 +95,8 @@ return function()
 					sections = { "warn" },
 					diagnostics_color = { warn = { bg = colors.orange, fg = colors.white } },
 				},
-				{ "filename", file_status = false, path = 1 },
-				{ modified, color = { bg = colors.red } },
+				{ "filename", file_status = false,        path = 1 },
+				{ modified,   color = { bg = colors.red } },
 				{
 					"%w",
 					cond = function()

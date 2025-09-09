@@ -70,4 +70,6 @@ return {
 	conform = "<leader>cF",
 	-- code action
 	lsp_code_action = "<leader>ca",
+
+	colorscheme = "catppuccin-mocha",
 }
