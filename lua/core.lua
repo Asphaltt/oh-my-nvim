@@ -185,9 +185,11 @@ local function set_autocmd()
 	-- Set a custom filetype and other options for patch files
 	vim.api.nvim_create_autocmd("BufRead", {
 		group = "patch",
-		pattern = { ".*.patch" },
+		pattern = { "*.patch" },
 		callback = function()
-			vim.bo.filetype = "patch" -- Explicitly set the file type
+			vim.opt_local.expandtab = true
+			vim.opt_local.tabstop = 8
+			vim.opt_local.shiftwidth = 8
 			-- The configs for patch files will be in ftplugin/patch.lua
 		end,
 	})
