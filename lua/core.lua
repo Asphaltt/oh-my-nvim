@@ -177,6 +177,20 @@ local function set_autocmd()
 		callback = function()
 			vim.bo.filetype = "gitcommit" -- Explicitly set the file type
 			-- The configs for COMMIT_EDITMSG will be in ftplugin/gitcommit.lua
+			--
+			-- Ensure the autopair rule is added only once
+			if not vim.g._gitcommit_autopair_rule_added then
+				local ok, npairs = pcall(require, "nvim-autopairs")
+				if ok then
+					local Rule = require("nvim-autopairs.rule")
+					npairs.add_rules({
+						Rule("```", "```", "gitcommit"):with_move(function(opts)
+							return opts.prev_char:match("```") ~= nil
+						end):use_key("`"),
+					})
+					vim.g._gitcommit_autopair_rule_added = true
+				end
+			end
 		end,
 	})
 
