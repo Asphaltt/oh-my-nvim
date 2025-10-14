@@ -175,8 +175,12 @@ local function set_autocmd()
 		group = "gitcommit",
 		pattern = "COMMIT_EDITMSG",
 		callback = function()
-			vim.bo.filetype = "gitcommit" -- Explicitly set the file type
-			-- The configs for COMMIT_EDITMSG will be in ftplugin/gitcommit.lua
+			vim.bo.filetype = "diff" -- Explicitly set the file type
+			vim.opt_local.textwidth = 72
+			vim.opt_local.wrap = true
+			vim.opt_local.tabstop = 8
+			vim.opt_local.shiftwidth = 8
+			vim.opt_local.expandtab = true
 			--
 			-- Ensure the autopair rule is added only once
 			if not vim.g._gitcommit_autopair_rule_added then
@@ -204,7 +208,6 @@ local function set_autocmd()
 			vim.opt_local.expandtab = true
 			vim.opt_local.tabstop = 8
 			vim.opt_local.shiftwidth = 8
-			-- The configs for patch files will be in ftplugin/patch.lua
 		end,
 	})
 
