@@ -216,6 +216,14 @@ local function set_autocmd()
 		vim.opt.tabstop = 8
 		vim.opt.shiftwidth = 8
 	end, {})
+
+	vim.api.nvim_create_user_command(
+		"MoveToTop",
+		function()
+			vim.cmd("m 0")
+		end,
+		{} -- No options needed
+	)
 end
 
 local function enable_lang_servers()
