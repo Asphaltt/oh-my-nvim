@@ -1,7 +1,8 @@
 return {
 	"stevearc/oil.nvim",
 	opts = {},
-	setup = function()
-		require("oil").setup()
-	end,
+	cmd = "Oil",
+	keys = {
+		{ "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
+	},
 }
