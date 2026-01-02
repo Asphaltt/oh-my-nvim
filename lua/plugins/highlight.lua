@@ -3,7 +3,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		config = function()
-			require("nvim-treesitter.configs").setup({
+			require("nvim-treesitter").setup({
 				indent = {
 					enable = true,
 					disable = {},
@@ -28,7 +28,7 @@ return {
 			})
 
 			-- let it to use 'markdown' parser for mdx filetype.
-			vim.treesitter.language.register('markdown', 'mdx')
+			vim.treesitter.language.register("markdown", "mdx")
 		end,
 	},
 
