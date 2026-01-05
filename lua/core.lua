@@ -154,15 +154,14 @@ local function set_transparency()
 	vim.o.pumblend = transparency
 end
 
+-- Set up colorscheme
+local function set_colorscheme()
+	local current_colorscheme = vim.g.colors_name or "tokyonight"
+	vim.cmd("colorscheme" .. " " .. current_colorscheme)
+end
+
 -- Set up auto command
 local function set_autocmd()
-	local current_colorscheme = vim.g.colors_name
-	vim.api.nvim_create_autocmd("VimEnter", {
-		callback = function()
-			vim.cmd("colorscheme" .. " " .. current_colorscheme)
-		end,
-	})
-
 	vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		pattern = { "*" },
 		command = [[%s/\s\+$//e]],
@@ -256,5 +255,6 @@ end
 
 set_keymap()
 set_transparency()
+set_colorscheme()
 set_autocmd()
 enable_lang_servers()
