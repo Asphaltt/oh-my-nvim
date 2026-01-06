@@ -30,19 +30,26 @@ return function()
 		return self.status
 	end
 
+	-- section_separators = { left = "", right = "" },
+	local left_sep = ""
+	local right_sep = ""
+
 	-- Put proper separators and gaps between components in sections
 	local function process_sections(sections)
 		for name, section in pairs(sections) do
-			local left = name:sub(9, 10) < "x"
+			local is_left = name:sub(9, 10) < "x"
+
 			for pos = 1, name ~= "lualine_z" and #section or #section - 1 do
-				table.insert(section, pos * 2, { empty, color = { fg = colors.white, bg = colors.white } })
+				table.insert(section, pos * 2, { empty, color = { bg = colors.white } })
 			end
+
 			for id, comp in ipairs(section) do
 				if type(comp) ~= "table" then
 					comp = { comp }
 					section[id] = comp
 				end
-				comp.separator = left and { right = "" } or { left = "" }
+
+				comp.separator = is_left and { right = left_sep } or { left = right_sep }
 			end
 		end
 		return sections
@@ -75,8 +82,7 @@ return function()
 		options = {
 			theme = theme,
 			component_separators = "",
-			section_separators = { left = "", right = "" },
-			-- section_separators = { left = "", right = "" },
+			section_separators = { left = left_sep, right = right_sep },
 		},
 		sections = process_sections({
 			lualine_a = { "mode" },
@@ -95,8 +101,8 @@ return function()
 					sections = { "warn" },
 					diagnostics_color = { warn = { bg = colors.orange, fg = colors.white } },
 				},
-				{ "filename", file_status = false, path = 1 },
-				{ modified, color = { bg = colors.red } },
+				{ "filename", file_status = false,        path = 1 },
+				{ modified,   color = { bg = colors.red } },
 				{
 					"%w",
 					cond = function()
