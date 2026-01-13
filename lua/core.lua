@@ -210,6 +210,18 @@ local function set_autocmd()
 		end,
 	})
 
+	-- Apply tab settings for C files
+	vim.api.nvim_create_augroup("cfiles", { clear = true })
+	vim.api.nvim_create_autocmd("FileType", {
+		group = "cfiles",
+		pattern = { "c" },
+		callback = function()
+			vim.opt_local.expandtab = true
+			vim.opt_local.tabstop = 8
+			vim.opt_local.shiftwidth = 8
+		end,
+	})
+
 	vim.api.nvim_create_user_command("TabStop8", function()
 		vim.opt.expandtab = true
 		vim.opt.tabstop = 8
