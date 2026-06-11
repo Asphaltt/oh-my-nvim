@@ -11,6 +11,15 @@ local function set_keymap()
 	map("n", keys.jump_up_window, "<C-W>k", option)
 	map("n", keys.jump_right_window, "<C-W>l", option)
 
+	vim.api.nvim_create_user_command("W", function()
+		vim.cmd("write !sudo tee % >/dev/null")
+		vim.cmd("edit!")
+	end, {})
+
+	vim.cmd([[
+	cnoreabbrev <expr> w!! ((getcmdtype() == ':' && getcmdline() == 'w!!') ? 'W' : 'w!!')
+	]])
+
 	vim.cmd([[
     " press esc to cancel search highlight
     nnoremap <silent> <Esc> :nohlsearch<CR>:echo<CR>
