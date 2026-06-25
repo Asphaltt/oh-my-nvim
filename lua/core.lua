@@ -245,6 +245,27 @@ local function set_autocmd()
 		end,
 		{} -- No options needed
 	)
+
+	local function wrap_width()
+		local cc = vim.g.colorcolumn
+		if type(cc) ~= "string" then
+			return 72
+		end
+
+		local first = cc:match("^%s*(%d+)")
+		return tonumber(first) or 72
+	end
+
+	vim.api.nvim_create_user_command("Rewrap", function(opts_rewrap)
+		local width = tonumber(opts_rewrap.args) or wrap_width()
+
+		local old = vim.bo.textwidth
+		vim.bo.textwidth = width
+		vim.cmd("silent keepjumps normal! ggVGgq")
+		vim.bo.textwidth = old
+	end, {
+		nargs = "?",
+	})
 end
 
 local function enable_lang_servers()
