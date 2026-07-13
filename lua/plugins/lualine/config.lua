@@ -67,6 +67,116 @@ return function()
 		return last_search .. "(" .. searchcount.current .. "/" .. searchcount.total .. ")"
 	end
 
+	local function is_visual_or_select_mode()
+		local mode = vim.fn.mode()
+		return mode == "v" or mode == "V" or mode == "\22" or mode == "s" or mode == "S" or mode == "\19"
+	end
+
+	local function byte_col_to_char_col(line, byte_col)
+		if byte_col <= 1 then
+			return 1
+		end
+
+		return vim.fn.strchars(line:sub(1, byte_col - 1)) + 1
+	end
+
+	local function count_region_chars(region)
+		if #region == 0 then
+			return 0
+		end
+
+		local count = #region - 1
+		for _, line in ipairs(region) do
+			count = count + vim.fn.strchars(line)
+		end
+
+		return count
+	end
+
+	local function selection_region_from_positions(mode)
+		local start_pos = vim.fn.getpos("v")
+		local end_pos = vim.fn.getpos(".")
+		local start_line = start_pos[2]
+		local start_col = start_pos[3]
+		local end_line = end_pos[2]
+		local end_col = end_pos[3]
+
+		if start_line == 0 or end_line == 0 then
+			return {}
+		end
+
+		if start_line > end_line or start_line == end_line and start_col > end_col then
+			start_line, end_line = end_line, start_line
+			start_col, end_col = end_col, start_col
+		end
+
+		local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+		if mode == "V" or mode == "S" then
+			return lines
+		end
+
+		if mode == "\22" or mode == "\19" then
+			local left_col = math.min(start_col, end_col)
+			local right_col = math.max(start_col, end_col)
+			local region = {}
+
+			for _, line in ipairs(lines) do
+				local line_chars = vim.fn.strchars(line)
+				local left_char = byte_col_to_char_col(line, left_col)
+				local right_char = math.min(byte_col_to_char_col(line, right_col), line_chars)
+				if left_char <= right_char then
+					table.insert(region, vim.fn.strcharpart(line, left_char - 1, right_char - left_char + 1))
+				else
+					table.insert(region, "")
+				end
+			end
+
+			return region
+		end
+
+		if #lines == 1 then
+			local left_char = byte_col_to_char_col(lines[1], start_col)
+			local right_char = byte_col_to_char_col(lines[1], end_col)
+			return { vim.fn.strcharpart(lines[1], left_char - 1, right_char - left_char + 1) }
+		end
+
+		local first_char = byte_col_to_char_col(lines[1], start_col)
+		local last_char = byte_col_to_char_col(lines[#lines], end_col)
+		lines[1] = vim.fn.strcharpart(lines[1], first_char - 1)
+		lines[#lines] = vim.fn.strcharpart(lines[#lines], 0, last_char)
+
+		return lines
+	end
+
+	local function selection_chars()
+		if not is_visual_or_select_mode() then
+			return ""
+		end
+
+		local mode = vim.fn.mode()
+		local region_type = mode
+		if mode == "s" then
+			region_type = "v"
+		elseif mode == "S" then
+			region_type = "V"
+		elseif mode == "\19" then
+			region_type = "\22"
+		end
+
+		local region
+		if vim.fn.exists("*getregion") == 1 then
+			region = vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), {
+				type = region_type,
+				exclusive = vim.o.selection == "exclusive",
+			})
+		else
+			region = selection_region_from_positions(mode)
+		end
+
+		local count = count_region_chars(region)
+		return count .. " " .. (count == 1 and "char" or "chars")
+	end
+
 	local function modified()
 		if vim.bo.modified then
 			return "+"
@@ -124,7 +234,7 @@ return function()
 			},
 			lualine_c = {},
 			lualine_x = {},
-			lualine_y = { search_result, "filetype", "filesize" },
+			lualine_y = { { selection_chars, cond = is_visual_or_select_mode }, search_result, "filetype", "filesize" },
 			lualine_z = { "%l:%c", "%p%%/%L" },
 		}),
 		inactive_sections = {
