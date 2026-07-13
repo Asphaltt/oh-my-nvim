@@ -5,6 +5,10 @@ return {
 		config = function()
 			require("gitsigns").setup({
 				current_line_blame = false,
+				max_file_length = 10000,
+				on_attach = function(bufnr)
+					return vim.b[bufnr].large_file ~= true
+				end,
 				preview_config = {
 					border = "rounded",
 				},

@@ -186,6 +186,38 @@ return function()
 		return ""
 	end
 
+	local function git_branch()
+		if vim.b.large_file then
+			return ""
+		end
+
+		return vim.b.gitsigns_head or ""
+	end
+
+	local function git_diff()
+		if vim.b.large_file then
+			return ""
+		end
+
+		local dict = vim.b.gitsigns_status_dict
+		if not dict then
+			return ""
+		end
+
+		local parts = {}
+		if dict.added and dict.added > 0 then
+			table.insert(parts, "+" .. dict.added)
+		end
+		if dict.changed and dict.changed > 0 then
+			table.insert(parts, "~" .. dict.changed)
+		end
+		if dict.removed and dict.removed > 0 then
+			table.insert(parts, "-" .. dict.removed)
+		end
+
+		return table.concat(parts, " ")
+	end
+
 	require("tokyonight").setup()
 
 	require("lualine").setup({
@@ -197,8 +229,8 @@ return function()
 		sections = process_sections({
 			lualine_a = { "mode" },
 			lualine_b = {
-				"branch",
-				"diff",
+				git_branch,
+				git_diff,
 				{
 					"diagnostics",
 					source = { "nvim" },
