@@ -3,6 +3,11 @@ return {
 		"lewis6991/gitsigns.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
+			for key, kind in pairs({ h = "hash", t = "title", c = "both" }) do
+				vim.keymap.set("n", "<leader>gy" .. key, function()
+					require("git_copy").copy(kind)
+				end, { desc = "Copy line commit " .. kind })
+			end
 			require("gitsigns").setup({
 				current_line_blame = false,
 				max_file_length = 10000,
