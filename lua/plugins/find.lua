@@ -1,10 +1,16 @@
 return {
 	{
 		"nvim-telescope/telescope.nvim",
-		defaults = {
-			-- Sort by most recently used first
-			sorting_strategy = "descending",
-			sort_mru = true,
+		opts = {
+			defaults = {
+				sorting_strategy = "descending",
+			},
+			pickers = {
+				-- Keep grep matches at the top instead of below padded blank rows.
+				grep_string = { sorting_strategy = "descending" },
+				live_grep = { sorting_strategy = "descending" },
+				buffers = { sort_mru = true },
+			},
 		},
 		dependencies = {
 			{ "nvim-lua/popup.nvim" },
@@ -13,7 +19,7 @@ return {
 			{ "nvim-telescope/telescope-fzy-native.nvim" },
 			{ "nvim-telescope/telescope-fzf-native.nvim" },
 			{ "nvim-telescope/telescope-ui-select.nvim" },
-			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+			{ "nvim-tree/nvim-web-devicons",             enabled = vim.g.have_nerd_font },
 		},
 		keys = {
 			{
