@@ -1,7 +1,24 @@
 return function()
 	local cmp = require("cmp")
+	local default_enabled = require("cmp.config.default")().enabled
+	local suppress_completion = false
+	local group = vim.api.nvim_create_augroup("CompletionWordJoin", { clear = true })
+	vim.api.nvim_create_autocmd({ "InsertCharPre", "InsertLeave", "BufLeave" }, {
+		group = group,
+		callback = function()
+			suppress_completion = false
+		end,
+	})
+
+	local function complete()
+		suppress_completion = false
+		cmp.complete()
+	end
 
 	cmp.setup({
+		enabled = function()
+			return not suppress_completion and default_enabled()
+		end,
 		visible = true,
 		preselect = "item",
 		completion = {
@@ -35,7 +52,18 @@ return function()
 		mapping = cmp.mapping.preset.insert({
 			["<C-b>"] = cmp.mapping.scroll_docs(-4),
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-Space>"] = cmp.mapping.complete(),
+			["<C-Space>"] = cmp.mapping(complete, { "i" }),
+			["<BS>"] = cmp.mapping(function(fallback)
+				local col = vim.fn.col(".") - 1
+				local line = vim.fn.getline(".")
+				-- Deleting the separator in `word |word` should not suggest `wordword`.
+				suppress_completion = vim.fn.match(line:sub(1, col), [[\k\s$]]) >= 0
+					and vim.fn.match(line:sub(col + 1), [[^\k]]) == 0
+				if suppress_completion then
+					cmp.close()
+				end
+				fallback()
+			end, { "i" }),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
@@ -52,7 +80,7 @@ return function()
 				elseif col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
 					fallback()
 				else
-					cmp.complete()
+					complete()
 				end
 			end, { "i", "s" }),
 
