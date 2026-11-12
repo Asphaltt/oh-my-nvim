@@ -8,6 +8,9 @@ return {
 					require("git_copy").copy(kind)
 				end, { desc = "Copy line commit " .. kind })
 			end
+			vim.keymap.set("n", "<leader>gft", function()
+				require("gitsigns").blame_line({ full = true })
+			end, { desc = "View line commit in float" })
 			require("gitsigns").setup({
 				current_line_blame = false,
 				max_file_length = 10000,
