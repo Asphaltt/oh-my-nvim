@@ -5,6 +5,9 @@ local opts = require("custom_opts")
 local function set_keymap()
 	local map = vim.keymap.set
 	local option = { noremap = true, silent = true }
+	if vim.fn.has("macunix") == 1 then
+		map("x", "Y", '"+y', option)
+	end
 
 	map("n", keys.jump_left_window, "<C-W>h", option)
 	map("n", keys.jump_down_window, "<C-W>j", option)
