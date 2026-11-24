@@ -1,7 +1,22 @@
 HOME = os.getenv("HOME")
 
--- PATH
-vim.env.PATH = HOME .. "/homebrew/bin" .. ":" .. vim.env.PATH
+-- Prefer Homebrew tools built for the current Mac architecture.
+local uv = vim.uv or vim.loop
+local machine = uv.os_uname().machine
+local brew_bins = {}
+if vim.fn.has("macunix") == 1 then
+    if machine == "arm64" then
+        brew_bins = { "/opt/homebrew/bin" }
+    elseif machine == "x86_64" then
+        brew_bins = { HOME .. "/homebrew/bin", "/usr/local/bin" }
+    end
+end
+for _, bin in ipairs(brew_bins) do
+    if vim.fn.isdirectory(bin) == 1 then
+        vim.env.PATH = bin .. ":" .. (vim.env.PATH or "")
+        break
+    end
+end
 
 vim.opt.termguicolors = true
 vim.opt.cursorline = true
