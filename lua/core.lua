@@ -295,7 +295,11 @@ local function enable_lang_servers()
 
 	vim.lsp.enable("ast_grep")
 	vim.lsp.enable("basics_ls")
-	-- vim.lsp.enable("clangd")
+	local clangd = require("plugins/lspconfig/clangd")
+	if clangd then
+		vim.lsp.config("clangd", clangd)
+		vim.lsp.enable("clangd")
+	end
 	vim.lsp.enable("gopls")
 	vim.lsp.enable("lua_ls")
 	vim.lsp.enable("pyrefly")
