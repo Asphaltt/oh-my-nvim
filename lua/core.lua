@@ -272,6 +272,10 @@ local function set_autocmd()
 	end, {
 		nargs = "?",
 	})
+
+	vim.api.nvim_create_user_command("CopyURL", function()
+		require("copy_url").copy()
+	end, { desc = "Copy URL under cursor to system clipboard" })
 end
 
 local function enable_lang_servers()
