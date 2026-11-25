@@ -1,13 +1,28 @@
+local function has_tree_sitter_cli()
+	if vim.fn.executable("tree-sitter") == 0 then
+		return false
+	end
+	local output = vim.fn.system({ "tree-sitter", "--version" })
+	local version = output:match("^tree%-sitter (%d+%.%d+%.%d+)")
+	return vim.v.shell_error == 0 and version ~= nil and vim.version.ge(version, "0.26.1")
+end
+
 return {
 	-- Syntax highlighting
 	{
 		"nvim-treesitter/nvim-treesitter",
 		branch = "main",
 		lazy = false,
-		build = ":TSUpdate",
+		build = function()
+			if has_tree_sitter_cli() then
+				vim.cmd("TSUpdate")
+			end
+		end,
 		config = function()
 			require("nvim-treesitter").setup()
-			require("nvim-treesitter").install({ "markdown", "markdown_inline", "regex" })
+			if has_tree_sitter_cli() then
+				require("nvim-treesitter").install({ "markdown", "markdown_inline", "regex" })
+			end
 
 			vim.api.nvim_create_autocmd("FileType", {
 				group = vim.api.nvim_create_augroup("treesitter_highlight", { clear = true }),
