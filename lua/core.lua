@@ -5,6 +5,9 @@ local opts = require("custom_opts")
 local function set_keymap()
 	local map = vim.keymap.set
 	local option = { noremap = true, silent = true }
+	local copy_yank = '<Cmd>lua require("clipboard_copy").copy_yank()<CR>'
+	map("n", "YY", "yy" .. copy_yank, { silent = true, desc = "Yank line to clipboard" })
+	map("x", "Y", "y" .. copy_yank, { silent = true, desc = "Yank selection to clipboard" })
 	if vim.fn.has("macunix") == 1 then
 		map("x", "Y", '"+y', option)
 	end
